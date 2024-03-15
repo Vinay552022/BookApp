@@ -10,6 +10,7 @@ const RegistrationForm = () => {
   };
  
   return (
+    
     <div className="container mt-3 rounded shadow">
       <form>
         <div className="form-group p-3">

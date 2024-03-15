@@ -7,7 +7,7 @@ const OfferBanner = () => {
       <div className="container text-center">
         <p className="offer-text">
           <strong>Exclusive Offer:</strong> Get <strong>10%</strong> off on your first purchase! Use code: <strong>OFFER10</strong>
-          <Link className="btn btn-dark btn-sm ms-3" to="/form">
+          <Link className="btn btn-dark btn-sm ms-3 mb-1" to="/form">
             Claim Now
           </Link>
         </p>
@@ -15,5 +15,4 @@ const OfferBanner = () => {
     </div>
   );
 };
-
 export default OfferBanner;

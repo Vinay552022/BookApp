@@ -9,6 +9,9 @@ import axios from 'axios';
 import {BrowserRouter as Router ,Route,Routes} from 'react-router-dom';
 import AdminNav from './components/AdminNav';
 import OfferBanner from './components/OfferBanner';
+import Content from './homeCompnents/Content';
+import Summary from './homeCompnents/Summary';
+import Author from './homeCompnents/Author';
 
 function App() {
   const [cookies,removeCookie]=useCookies([])
@@ -65,7 +68,10 @@ function App() {
             <Routes>
               <Route path='/' exact element={<Book/>}></Route>
               <Route path='/Form' element={<UserForm/>}></Route>
-              <Route path="/AdminLogin" element={<Login setRoute={setRoute} />}/>           
+              <Route path="/AdminLogin" element={<Login setRoute={setRoute} />}/>   
+              <Route path='/Content' element={<Content/>}  />      
+              <Route path='/Summary' element={<Summary/>}/>
+              <Route path='/Author' element={<Author/>}/>
            </Routes>
           </Router>
           </>

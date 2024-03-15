@@ -29,9 +29,9 @@ export default function Login(props) {
       if (data.success) {
         setRoute(true);
         // Navigate to the home page
-        console.log(data)
-        sessionStorage.setItem("userName",login.email)
-        navigate('/',{replace:true});
+        console.log(data);
+        sessionStorage.setItem('userName', login.email);
+        navigate('/', { replace: true });
       } else {
         // Handle login failure
         setErrorMessage('Incorrect email or password');
@@ -42,67 +42,65 @@ export default function Login(props) {
   };
 
   return (
-    <div>
-      <div className="d-flex align-items-center justify-content-center vh-100 rounded">
-        <form
-          onSubmit={handleFormSubmit}
-          className="p-5 shadow-lg bg-white rounded"
-          style={{ minWidth: '400px', maxWidth: '450px' }}
-        >
-          <h2 className="text-center mb-4 text-tertiary">Welcome Back!</h2>
-          {errorMessage && (
-            <div className="alert alert-danger" role="alert">
-              {errorMessage}
-            </div>
+    <div className="d-flex align-items-center justify-content-center vh-100">
+      <form
+        onSubmit={handleFormSubmit}
+        className="p-5 shadow-lg bg-white rounded"
+        style={{ minWidth: '400px', maxWidth: '450px' }}
+      >
+        <h2 className="text-center mb-4 text-tertiary">Welcome Back!</h2>
+        {errorMessage && (
+          <div className="alert alert-danger" role="alert">
+            {errorMessage}
+          </div>
+        )}
+        <div className="mb-3">
+          <label htmlFor="inputEmail" className="form-label">
+            Email
+          </label>
+          <input
+            type="email"
+            name="email"
+            className="form-control"
+            id="inputEmail"
+            onChange={(e) =>
+              setLogin({ ...login, [e.target.name]: e.target.value })
+            }
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="inputPassword" className="form-label">
+            Password
+          </label>
+          <input
+            type="password"
+            name="password"
+            className={`form-control ${
+              passwordError ? 'is-invalid' : ''
+            }`}
+            id="inputPassword"
+            onChange={(e) =>
+              setLogin({ ...login, [e.target.name]: e.target.value })
+            }
+          />
+          {passwordError && (
+            <div className="invalid-feedback">Please enter your password.</div>
           )}
-          <div className="mb-3">
-            <label htmlFor="inputEmail" className="form-label">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              className="form-control"
-              id="inputEmail"
-              onChange={(e) =>
-                setLogin({ ...login, [e.target.name]: e.target.value })
-              }
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="inputPassword" className="form-label">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              className={`form-control ${
-                passwordError ? 'is-invalid' : ''
-              }`}
-              id="inputPassword"
-              onChange={(e) =>
-                setLogin({ ...login, [e.target.name]: e.target.value })
-              }
-            />
-            {passwordError && (
-              <div className="invalid-feedback">Please enter your password.</div>
-            )}
-          </div>
+        </div>
 
-          <button type="submit" className="btn btn-dark btn-block">
-            Sign in
-          </button>
-          <p className="text-center mt-3">
-            <a href="#" className="text-muted">
-              Forgot your password?
-            </a>
-          </p>
-          <hr className="my-4" />
-          {/* <p className="text-center">
-            Don't have an account? <a href="#" className="text-primary">Sign Up</a>
-          </p> */}
-        </form>
-      </div>
+        <button type="submit" className="btn btn-dark btn-block">
+          Sign in
+        </button>
+        <p className="text-center mt-3">
+          <a href="#" className="text-muted">
+            Forgot your password?
+          </a>
+        </p>
+        <hr className="my-4" />
+        {/* <p className="text-center">
+          Don't have an account? <a href="#" className="text-primary">Sign Up</a>
+        </p> */}
+      </form>
     </div>
   );
 }
