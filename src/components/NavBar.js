@@ -5,9 +5,9 @@ export default function NavBar() {
       <nav className="navbar border-bottom border-body navbar-expand-lg" style={{ backgroundColor: "black" }} data-bs-theme="dark">
 
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">
+          <Link className="navbar-brand" to={'/'}>
             JAVA
-          </a>
+          </Link>
           <button
             className="navbar-toggler "
             type="button"

@@ -15,13 +15,15 @@ import Author from './homeCompnents/Author';
 
 function App() {
   const [cookies,removeCookie]=useCookies([])
-  const [userName,setUserName]=useState()
+  const [userName,setUserName]=useState('')
+  const [role,setRole]=useState('')
   const [route,setRoute]=useState(false)
   useEffect(()=>{
     console.log("hello",cookies)
     const verifyCookie = async () => {
-    
-      if (cookies.token) {
+      console.log("j")
+      if (cookies.token!='undefined') {
+
         try {
           const response = await axios.post(
             "http://localhost:4000",
@@ -52,7 +54,7 @@ function App() {
     
   }
   useEffect(()=>{
-    if(userName!=undefined){
+    if(userName){
       
       setRoute(true);
     }
@@ -76,6 +78,11 @@ function App() {
           </Router>
           </>
         );
+  }
+  else if(route==true && role=="user"){
+    return(
+      <></>
+    )
   }
   else{
     return(

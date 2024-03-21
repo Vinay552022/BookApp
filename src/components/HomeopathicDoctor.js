@@ -1,23 +1,79 @@
-import {React,useState} from "react";
-export default function HomeopathicDoctor(){
+import {React,useState,useEffect} from "react";
+import { Eye, EyeSlash } from "react-bootstrap-icons";
+export default function BHMSStudent(props){
+  const { setData } = props;
   const [selectedState, setSelectedState] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [residentialState, setResidentialState] = useState('');
   const [residentialDistrict, setResidentialDistrict] = useState('');
-  const [qualification, setQualification] = useState('');
-  const [specialty, setSpecialty] = useState('');
-  const [registrationNumber, setRegistrationNumber] = useState('');
-  const [stateRegistered, setStateRegistered] = useState('');
   const [sameAsCurrent, setSameAsCurrent] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    userType:"HomeopathicDoctor",
+    name: "",
+    phoneNumber: "",
+    email: "",
+    password: "",
+    university: "",
+    college: "",
+    qualification:"",
+    specialty:"",
+    registrationNumber:"",
+    stateRegistered:"",
+    currentJob:"",
+    currentAddress: {
+      lane1: "",
+      lane2: "",
+      pincode: "",
+      state: "",
+      district: ""
+    },
+    residentialAddress: {
+      sameAsCurrent: false,
+      lane1: "",
+      lane2: "",
+      pincode: "",
+      state: "",
+      district: ""
+    },
+    alternatePhoneNumber: ""
+  });
 
-  const handleQualificationChange = (event) => {
-    setQualification(event.target.value);
-  };
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      currentAddress: {
+        ...prev.currentAddress,
+        state: selectedState,
+        district: selectedDistrict
+      }
+    }));
+  }, [selectedState, selectedDistrict]);
 
-  const handleStateChange = (e, setAddressState) => {
+  useEffect(() => {
+    if (sameAsCurrent) {
+      setFormData(prev => ({
+        ...prev,
+        residentialAddress: {
+          ...prev.currentAddress
+          
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        residentialAddress: {
+          ...prev.residentialAddress,
+          state: residentialState,
+          district: residentialDistrict
+        }
+      }));
+    }
+  }, [sameAsCurrent, residentialState, residentialDistrict,selectedState,selectedDistrict]);
+
+  const handleStateChange = (e, setAddressState, setAddressDistrict) => {
     setAddressState(e.target.value);
-    setSelectedDistrict('');
-    setResidentialDistrict('');
+    setAddressDistrict('');
   };
 
   const handleDistrictChange = (e, setAddressDistrict) => {
@@ -26,16 +82,41 @@ export default function HomeopathicDoctor(){
 
   const handleCheckboxChange = () => {
     setSameAsCurrent(!sameAsCurrent);
+  };
 
-    // If the addresses are the same, copy current address to residential address
-    if (!sameAsCurrent) {
-      setResidentialState(selectedState);
-      setResidentialDistrict(selectedDistrict);
-    } else {
-      // Clear residential address fields if not the same
-      setResidentialState('');
-      setResidentialDistrict('');
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name,value,formData)
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleCurrentAddressChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      currentAddress: {
+        ...prev.currentAddress,
+        [name]: value
+      }
+    }));
+  };
+
+  const handleResidentialAddressChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      residentialAddress: {
+        ...prev.residentialAddress,
+        [name]: value
+      }
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    setData(formData);
   };
   const statesAndDistricts ={  
     "states":[  
@@ -938,15 +1019,23 @@ export default function HomeopathicDoctor(){
        }
     ]
  }
-
     return(
-        <div className="user-section m-3">
+      
+        <div className="user-section m-3" >
             <div className="row mb-3">
               <label htmlFor="Name" className="col-sm-2 col-form-label">
                 Name
               </label>
               <div className="col-sm-10">
-                <input type="text" className="form-control" required id="Name" />
+              <input 
+                  type="text" 
+                  className="form-control" 
+                  name="name" 
+                  value={formData.name} 
+                  required 
+                  id="Name" 
+                  onChange={(e) => handleChange(e)} 
+                />
               </div>
             </div>
             <div className="row mb-3">
@@ -961,6 +1050,9 @@ export default function HomeopathicDoctor(){
                   type="tel"
                   className="form-control"
                   id="inputPhoneNumber" required
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={(e)=>handleChange(e)}
                 />
               </div>
             </div>
@@ -969,10 +1061,35 @@ export default function HomeopathicDoctor(){
                 Email
               </label>
               <div className="col-sm-10">
-                <input type="email" className="form-control" id="inputEmail3" required/>
+                <input type="email" className="form-control" name="email" value={formData.email}  id="inputEmail3" onChange={(e)=>handleChange(e)} required/>
               </div>
             </div>
             <div className="row mb-3">
+        <label htmlFor="inputPassword" className="col-sm-2 col-form-label">
+          Password
+        </label>
+        <div className="col-sm-10">
+          <div className="position-relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              className="form-control"
+              id="inputPassword"
+              name="password"
+              value={formData.password}
+              onChange={(e)=>handleChange(e)}
+              required
+            />
+            <span
+              className="position-absolute top-50 end-0 translate-middle-y"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ cursor: "pointer", paddingRight: "20px", fontSize: "20px" }}
+            >
+              {showPassword ? <EyeSlash /> : <Eye />}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="row mb-3">
                 <label htmlFor="qualification" className="col-sm-2 col-form-label">
                     Qualification
                 </label>
@@ -980,8 +1097,9 @@ export default function HomeopathicDoctor(){
                     <select
                         className="form-control"
                         id="qualification"
-                        value={qualification}
-                        onChange={handleQualificationChange}
+                        name="qualification"
+                        value={formData.qualification}
+                        onChange={handleChange}
                         required
                     >
                         <option value="" disabled>Select Qualification</option>
@@ -991,7 +1109,7 @@ export default function HomeopathicDoctor(){
                 </div>
             </div>
 
-            {qualification === 'MD' && (
+            {formData.qualification === 'MD' && (
                 <div className="row mb-3">
                     <label htmlFor="specialty" className="col-sm-2 col-form-label">
                         Specialty
@@ -1002,13 +1120,14 @@ export default function HomeopathicDoctor(){
                             className="form-control"
                             id="specialty"
                             placeholder="Enter Specialty"
-                            value={specialty}
-                            onChange={(e) => setSpecialty(e.target.value)}
+                            name="specialty"
+                            value={formData.specialty}
+                            onChange={handleChange}
                         />
                     </div>
                 </div>
             )}
-        <div className="row mb-3">
+      <div className="row mb-3">
         <label htmlFor="registrationNumber" className="col-sm-2 col-form-label">
           Registration Number
         </label>
@@ -1018,13 +1137,13 @@ export default function HomeopathicDoctor(){
             className="form-control"
             id="registrationNumber"
             placeholder="Enter Registration Number"
-            value={registrationNumber}
-            onChange={(e) => setRegistrationNumber(e.target.value)}
+            name="registrationNumber"
+            value={formData.registrationNumber}
+            onChange={handleChange}
             required
           />
         </div>
       </div>
-
       <div className="row mb-3">
         <label htmlFor="stateRegistered" className="col-sm-2 col-form-label">
           State Registered
@@ -1033,8 +1152,9 @@ export default function HomeopathicDoctor(){
           <select
             className="form-control"
             id="stateRegistered"
-            value={stateRegistered}
-            onChange={(e) => setStateRegistered(e.target.value)}
+            name="stateRegistered"
+            value={formData.stateRegistered}
+            onChange={(e) => handleChange(e)}
             required
           >
             <option value="" disabled>Select State</option>
@@ -1051,7 +1171,7 @@ export default function HomeopathicDoctor(){
                 University
               </label>
               <div className="col-sm-10">
-                <input type="text" className="form-control" id="inputUniversity" required/>
+                <input type="text" className="form-control" id="inputUniversity" name="university" value={formData.university} onChange={(e)=>handleChange(e)} required/>
               </div>
             </div>
             <div className="row mb-3">
@@ -1059,7 +1179,7 @@ export default function HomeopathicDoctor(){
                 College
               </label>
               <div className="col-sm-10">
-                <input type="text" className="form-control" id="inputCollege" required />
+                <input type="text" className="form-control" id="inputCollege" name="college" value={formData.college} onChange={(e)=>handleChange(e)} required />
               </div>
             </div>
             <div className="row mb-3">
@@ -1067,24 +1187,26 @@ export default function HomeopathicDoctor(){
                 Current Job
               </label>
               <div className="col-sm-10">
-                <input type="text" className="form-control" id="inputJob" required />
+                <input type="text" className="form-control" name="currentJob" value={formData.currentJob} onChange={handleChange} id="inputJob" required />
               </div>
             </div>
+            
+            
             <div className="row mb-3">
               <label htmlFor="currentAddress" className="col-sm-2 col-form-label">
                 Current Address
               </label>
               <div className="col-sm-10">
                 <div className="mb-3">
-                  <input type="text" className="form-control" id="inputLane1" placeholder="Lane 1" required/>
+                  <input type="text" className="form-control" id="inputLane1" name="lane1" value={formData.currentAddress.lane1} onChange={handleCurrentAddressChange}  placeholder="Lane 1" required/>
                 </div>
                 <div className="mb-3">
-                  <input type="text" className="form-control" id="inputLane2" placeholder="Lane 2" required/>
+                  <input type="text" className="form-control" id="inputLane2" name="lane2" value={formData.currentAddress.lane2} onChange={handleCurrentAddressChange} placeholder="Lane 2" required/>
                 </div>
                 <div className="mb-3">
-                  <input type="text" className="form-control" id="inputPincode" placeholder="Pincode" required/>
+                  <input type="number" className="form-control" id="inputPincode" name="pincode" value={formData.currentAddress.pincode} onChange={handleCurrentAddressChange} placeholder="Pincode" required/>
                 </div>
-                <div className="row mb-3">
+            <div className="row mb-3">
               <label htmlFor="selectState" className="col-sm-2 col-form-label">
                 State
               </label>
@@ -1092,7 +1214,7 @@ export default function HomeopathicDoctor(){
                 <select
                   className="form-control"
                   id="selectState"
-                  onChange={(e) => handleStateChange(e, setSelectedState)}
+                  onChange={(e) => handleStateChange(e, setSelectedState,setSelectedDistrict)}
                   value={selectedState}
                   required
                 >
@@ -1135,8 +1257,7 @@ export default function HomeopathicDoctor(){
               </div>
             </div>
             <div className="row mb-3">
-            <div className="col-sm-6">
-          <div className="form-check mb-3">
+            <div className="form-check mb-3">
             <input
               type="checkbox"
               className="form-check-input"
@@ -1151,113 +1272,102 @@ export default function HomeopathicDoctor(){
               Residential address same as current address
             </label>
           </div>
-        </div>     
             </div>
             </div>
             </div>
           
-            
-
-           {/* Residential address fields */}
-    
+        {!sameAsCurrent && (
         
-    
-        
-
-        
-          
-           {!sameAsCurrent && (
-        <div className="row mb-3">
-        <label htmlFor="residentialAddress" className="col-sm-2 col-form-label">
-          Residential Address
+           <div className="row mb-3">
+              <label htmlFor="residentialAddress" className="col-sm-2 col-form-label">
+                Residential Address
+              </label>
+              <div className="col-sm-10">
+              <div className="mb-3">
+                  <input type="text" className="form-control" id="rinputLane1" name="lane1" value={formData.residentialAddress.lane1} onChange={handleResidentialAddressChange}  placeholder="Lane 1" required/>
+                </div>
+                <div className="mb-3">
+                  <input type="text" className="form-control" id="rinputLane2" name="lane2" value={formData.residentialAddress.lane2} onChange={handleResidentialAddressChange} placeholder="Lane 2" required/>
+                </div>
+                <div className="mb-3">
+                  <input type="text" className="form-control" id="rinputPincode" name="pincode" value={formData.residentialAddress.pincode} onChange={handleResidentialAddressChange} placeholder="Pincode" required/>
+                </div>
+                {/*res state */}
+                <div className="row mb-3">
+        <label htmlFor="residentialState" className="col-sm-2 col-form-label">
+          Residential State
         </label>
         <div className="col-sm-10">
-          <div className="mb-3">
-            <input type="text" className="form-control" id="inputLane1" placeholder="Lane 1" required/>
-          </div>
-          <div className="mb-3">
-            <input type="text" className="form-control" id="inputLane2" placeholder="Lane 2" required/>
-          </div>
-          <div className="mb-3">
-            <input type="text" className="form-control" id="inputPincode1" placeholder="Pincode" required/>
-          </div>
-          {/*res state */}
-          <div className="row mb-3">
-  <label htmlFor="residentialState" className="col-sm-2 col-form-label">
-    Residential State
-  </label>
-  <div className="col-sm-10">
-    <select
-      className="form-control"
-      id="residentialState"
-      onChange={(e) => handleStateChange(e, setResidentialState)}
-      value={residentialState}
-      required
-      disabled={sameAsCurrent}
-    >
-      <option value="" disabled selected>
-        Select State
-      </option>
-      {statesAndDistricts.states.map((state) => (
-        <option key={state.state} value={state.state}>
-          {state.state}
-        </option>
-      ))}
-    </select>
-  </div>
-</div>
-        {/*res dist */}
-<div className="row mb-3">
-  <label htmlFor="residentialDistrict" className="col-sm-2 col-form-label">
-    Residential District
-  </label>
-  <div className="col-sm-10">
-    <select
-      className="form-control"
-      id="residentialDistrict"
-      onChange={(e) => handleDistrictChange(e, setResidentialDistrict)}
-      value={residentialDistrict}
-      required
-      disabled={sameAsCurrent}
-    >
-      <option value="" disabled selected>
-        Select District
-      </option>
-      {residentialState &&
-        statesAndDistricts.states
-          .find((state) => state.state === residentialState)
-          .districts.map((district) => (
-            <option key={district} value={district}>
-              {district}
-            </option>
-          ))}
-    </select>
-  </div>
-</div>
-  </div>
-  </div>
-)}
-
-      <div className="row mb-3">
-        <label
-          htmlFor="optionalInputPhoneNumber"
-          className="col-sm-2 col-form-label"
-        >
-          Alternate Phone Number
-        </label>
-        <div className="col-sm-10">
-          <input
-            type="tel"
+          <select
             className="form-control"
-            id="optionalInputPhoneNumber"
-          />
+            id="residentialState"
+            onChange={(e) => handleStateChange(e, setResidentialState,setResidentialDistrict)}
+            value={residentialState}
+            required
+            disabled={sameAsCurrent}
+          >
+            <option value="" disabled selected>
+              Select State
+            </option>
+            {statesAndDistricts.states.map((state) => (
+              <option key={state.state} value={state.state}>
+                {state.state}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
-
-      <button type="submit" className="btn btn-dark mb-2">
-        Submit
-      </button>
-    </div>
-          
+              {/*res dist */}
+      <div className="row mb-3">
+        <label htmlFor="residentialDistrict" className="col-sm-2 col-form-label">
+          Residential District
+        </label>
+        <div className="col-sm-10">
+          <select
+            className="form-control"
+            id="residentialDistrict"
+            onChange={(e) => handleDistrictChange(e, setResidentialDistrict)}
+            value={residentialDistrict}
+            required
+            disabled={sameAsCurrent}
+          >
+            <option value="" disabled selected>
+              Select District
+            </option>
+            {residentialState &&
+                    statesAndDistricts.states
+                      .find((state) => state.state === residentialState)
+                      .districts.map((district) => (
+                        <option key={district} value={district}>
+                          {district}
+                        </option>
+                      ))}
+            
+          </select>
+        </div>
+      </div>
+        </div>
+        </div>
+      )}
+            <div className="row mb-3">
+              <label
+                htmlFor="optionalInputPhoneNumber"
+                className="col-sm-2 col-form-label"
+              >
+                Alternate Phone Number
+              </label>
+              <div className="col-sm-10">
+                <input
+                  type="tel"
+                  className="form-control"
+                  id="optionalInputPhoneNumber"
+                  name="alternatePhoneNumber"
+                  value={formData.alternatePhoneNumber}
+                  onChange={(e)=>handleChange(e)}
+                />
+              </div>
+            </div>
+            <button type="submit" className="btn btn-dark mb-2" onClick={handleSubmit} >submit</button>
+          </div>
     )
 }
