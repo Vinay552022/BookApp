@@ -17,7 +17,7 @@ export default function BHMSStudent(props){
     university: "",
     college: "",
     qualification:"",
-    specialty:"",
+    speciality:"",
     registrationNumber:"",
     stateRegistered:"",
     currentJob:"",
@@ -1111,18 +1111,19 @@ export default function BHMSStudent(props){
 
             {formData.qualification === 'MD' && (
                 <div className="row mb-3">
-                    <label htmlFor="specialty" className="col-sm-2 col-form-label">
-                        Specialty
+                    <label htmlFor="speciality" className="col-sm-2 col-form-label">
+                        speciality
                     </label>
                     <div className="col-sm-10">
                         <input
                             type="text"
                             className="form-control"
-                            id="specialty"
-                            placeholder="Enter Specialty"
-                            name="specialty"
-                            value={formData.specialty}
+                            id="speciality"
+                            placeholder="Enter speciality"
+                            name="speciality"
+                            value={formData.speciality}
                             onChange={handleChange}
+                            required
                         />
                     </div>
                 </div>

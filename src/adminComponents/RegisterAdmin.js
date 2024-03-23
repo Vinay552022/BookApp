@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-export default function Login(props) {
+export default function RegiserAdmin() {
   const [passwordError, setPasswordError] = useState(false);
   const [login, setLogin] = useState({ email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
-  const { setUserData } = props;
   const navigate = useNavigate();
 
   const handleFormSubmit = async (e) => {
@@ -27,9 +26,8 @@ export default function Login(props) {
       });
 
       if (data.success) {
-        setUserData(data.user);
         // Navigate to the home page
-        console.log(data);
+        sessionStorage.setItem('userName', login.email);
         navigate('/', { replace: true });
       } else {
         // Handle login failure
@@ -41,13 +39,14 @@ export default function Login(props) {
   };
 
   return (
+    <div className='container'>
     <div className="d-flex align-items-center justify-content-center vh-100">
       <form
         onSubmit={handleFormSubmit}
         className="p-5 shadow-lg bg-white rounded"
         style={{ minWidth: '400px', maxWidth: '450px' }}
       >
-        <h2 className="text-center mb-4 text-tertiary">Welcome Back!</h2>
+        <h2 className="text-center mb-4 text-tertiary">Admin Register</h2>
         {errorMessage && (
           <div className="alert alert-danger" role="alert">
             {errorMessage}
@@ -95,11 +94,8 @@ export default function Login(props) {
             Forgot your password?
           </a>
         </p>
-        <hr className="my-4" />
-        {/* <p className="text-center">
-          Don't have an account? <a href="#" className="text-primary">Sign Up</a>
-        </p> */}
       </form>
+    </div>
     </div>
   );
 }

@@ -31,7 +31,7 @@ const RegistrationForm = () => {
       setNotification({ message: response.data.message, type: 'success' });
       setTimeout(() => {
         setNotification({ message: '', type: '' }); // Clear the notification
-        navigate("/AdminLogin");
+        navigate("/Login");
       }, 3000); // Timeout of 3 seconds
     } catch (error) {
       console.error('Error:', error);
